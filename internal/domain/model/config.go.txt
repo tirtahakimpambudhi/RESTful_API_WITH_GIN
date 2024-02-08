@@ -1,0 +1,37 @@
+package model
+
+type Server struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Protocol string `mapstructure:"protocol"`
+}
+
+type Database struct {
+	Host         string   `mapstructure:"host"`
+	Port         string   `mapstructure:"port"`
+	Username     string   `mapstructure:"username"`
+	Password     string   `mapstructure:"password"`
+	DatabaseName string   `mapstructure:"database_name"`
+	TableName    []string `mapstructure:"table_name"`
+}
+
+type Other struct {
+	SecretKey   string `mapstructure:"secret_key"`
+	SaltLevel   int    `mapstructure:"salt_level"`
+	BatchSize   int    `mapstructure:"batch_size"`
+	LimitInsert int    `mapstructure:"limit_insert"`
+	Limit       int    `mapstructure:"limit"`
+}
+
+type Config struct {
+	Server   *Server   `mapstructure:"server"`
+	Database *Database `mapstructure:"database"`
+	Other    *Other    `mapstructure:"other"`
+	JWT      *JWT      `mapstructure:"jwt"`
+}
+
+type JWT struct {
+	AppName   string `mapstructure:"app_name"`
+	Exp       int    `mapstructure:"exp"`
+	SecretKey string `mapstructure:"secret_key"`
+}

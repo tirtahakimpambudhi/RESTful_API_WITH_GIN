@@ -1,0 +1,24 @@
+[database]
+  host = "localhost"
+  port = "5432"
+  username = "postgres"
+  password = "postgres"
+  database_name = "test"
+  table_name = ["users","todolist"]
+
+[server]
+  host = "localhost"
+  port = "3500"
+  protocol = "http"
+
+[other]
+  secret_key = "secret"
+  salt_level = 10
+  batch_size = 100
+  limit_insert = 1000
+  limit = 10
+
+[jwt]
+  app_name = "SIMPLE JWT APP"
+  exp = 5 #minute
+  secret_key = "jwt_secret"
