@@ -321,10 +321,10 @@ func (u *UsersService) CreateUser(ctx context.Context, user model.UserRequest) (
 
 	validationError := u.Validation.Struct(user)
 	badRequest := helper.NewCustomError(validationError, exception.ErrorBadRequest)
-	err := u.Repository.CreateUser(ctx, tx, *user.ToUser())
-	conflict := helper.NewCustomError(err, exception.ErrorConflict)
 	var adminCount int64
 	errCount := tx.WithContext(ctx).Model(model.User{}).Where("roles = ?", model.Admin).Count(&adminCount).Error
+	err := u.Repository.CreateUser(ctx, tx, *user.ToUser())
+	conflict := helper.NewCustomError(err, exception.ErrorConflict)
 	if errCount != nil {
 		tx.Rollback()
 		errService = exception.NewError(errCount, exception.ErrorInternalServer)
@@ -367,11 +367,10 @@ func (u *UsersService) CreateUsers(ctx context.Context, users model.UsersRequest
 	}
 	validationError := u.Validation.Struct(usersStruct)
 	badRequest := helper.NewCustomError(validationError, exception.ErrorBadRequest)
-
-	err := u.Repository.CreateUsers(ctx, tx, users.ToUsers())
-	conflict := helper.NewCustomError(err, exception.ErrorConflict)
 	var adminCount int64
 	errCount := tx.WithContext(ctx).Model(model.User{}).Where("roles = ?", model.Admin).Count(&adminCount).Error
+	err := u.Repository.CreateUsers(ctx, tx, users.ToUsers())
+	conflict := helper.NewCustomError(err, exception.ErrorConflict)
 	if errCount != nil {
 		tx.Rollback()
 		errService = exception.NewError(errCount, exception.ErrorInternalServer)
