@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	_ "go_gin/cmd/docs"
 	"go_gin/internal/config"
 	"go_gin/internal/controller"
 	"go_gin/internal/db"
@@ -18,6 +19,12 @@ import (
 	"time"
 )
 
+//	@title 			Users Dan TodoList RESTful API
+//	@version 		1.0.1
+//	@description 	RESTful API Users Dan TodoList Menggunakan Auth JWT (JSON WEB TOKEN)
+
+// @host localhost:3500
+// @basePath /api
 func main() {
 	pgstore := db.NewPGStore(config.Database)
 	dbs, _ := pgstore.Connect()

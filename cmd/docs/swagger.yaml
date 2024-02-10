@@ -1,0 +1,9 @@
+basePath: /api
+host: localhost:3500
+info:
+  contact: {}
+  description: RESTful API Users Dan TodoList Menggunakan Auth JWT (JSON WEB TOKEN)
+  title: Users Dan TodoList RESTful API
+  version: 1.0.1
+paths: {}
+swagger: "2.0"

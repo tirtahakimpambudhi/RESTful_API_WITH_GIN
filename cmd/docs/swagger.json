@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "RESTful API Users Dan TodoList Menggunakan Auth JWT (JSON WEB TOKEN)",
+        "title": "Users Dan TodoList RESTful API",
+        "contact": {},
+        "version": "1.0.1"
+    },
+    "host": "localhost:3500",
+    "basePath": "/api",
+    "paths": {}
+}
