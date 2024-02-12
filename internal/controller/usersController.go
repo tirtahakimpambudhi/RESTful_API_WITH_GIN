@@ -17,6 +17,16 @@ type UsersController struct {
 	Service model.UsersService
 }
 
+// GetUserSearch	godoc
+// @Security Bearer
+// @Summary Get Users array
+// @Description Responds with the list of all User as JSON By Search
+// @Tags users
+// @Param search query string true "search users by key"
+// @Param page query int true "search users by key"
+// @Produce json
+// @Success 200 {array} web.StandartResponse
+// @Router /admin/users [get]
 func (u *UsersController) GetBySearch(c *gin.Context) {
 	var queryParams web.SearchQuery
 	ctx := context.Background()

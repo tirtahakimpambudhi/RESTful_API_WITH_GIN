@@ -19,12 +19,25 @@ import (
 	"time"
 )
 
-//	@title 			Users Dan TodoList RESTful API
-//	@version 		1.0.1
-//	@description 	RESTful API Users Dan TodoList Menggunakan Auth JWT (JSON WEB TOKEN)
+// @title           Userd & Todolist Service
+// @version         1.0.1
+// @description     Managament Todolist with Users auth
+// @termsOfService  https://tos.santoshk.dev
 
-// @host localhost:3500
-// @basePath /api
+// @contact.name   Tirta Hakim Pambudhi
+// @contact.url    https://github.com/tirtahakimpambudhi
+// @contact.email  tirtanewwhakim22@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:3500
+// @BasePath  /api/
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	pgstore := db.NewPGStore(config.Database)
 	dbs, _ := pgstore.Connect()
