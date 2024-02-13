@@ -21,12 +21,15 @@ type UsersController struct {
 // @Security Bearer
 // @Summary Get Users array
 // @Description Responds with the list of all User as JSON By Search
-// @Tags users
+// @Tags Admin
 // @Param search query string true "search users by key"
-// @Param page query int true "search users by key"
+// @Param page query int true "page"
 // @Produce json
-// @Success 200 {array} web.StandartResponse
-// @Router /admin/users [get]
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      401  {object}  handler.ResponseErrors
+// @Failure      403  {object}  handler.ResponseErrors
+// @Router /admin/users/search [get]
 func (u *UsersController) GetBySearch(c *gin.Context) {
 	var queryParams web.SearchQuery
 	ctx := context.Background()
@@ -98,6 +101,18 @@ func NewUsersController(service model.UsersService) model.UsersController {
 	return &UsersController{Service: service}
 }
 
+// GetAllUser	godoc
+// @Security Bearer
+// @Summary Get Users array
+// @Description Responds with the list of all User as JSON
+// @Tags Admin
+// @Param page query int true "page"
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      401  {object}  handler.ResponseErrors
+// @Failure      403  {object}  handler.ResponseErrors
+// @Router /admin/users [get]
 func (u *UsersController) GetAll(c *gin.Context) {
 	var queryParams web.GetAllQuery
 	ctx := context.Background()
@@ -136,6 +151,16 @@ func (u *UsersController) GetByID(c *gin.Context) {
 	}))
 }
 
+// RegisterUsers	godoc
+// @Summary Register for all role
+// @Description Create New Users
+// @Tags users
+// @Param request body	model.UserRequest true "Register Request Body"
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      409  {object}  handler.ResponseErrors
+// @Router /register [post]
 func (u *UsersController) CreateUser(c *gin.Context) {
 	var userRequest model.UserRequest
 	var ID uuid.UUID
@@ -158,6 +183,16 @@ func (u *UsersController) CreateUser(c *gin.Context) {
 
 }
 
+// LoginUsers	godoc
+// @Summary Login for all role
+// @Description Responds with the access token
+// @Tags users
+// @Param request body	model.UserLoginUpdateRequest true "Login Request Body"
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      404  {object}  handler.ResponseErrors
+// @Router /login [post]
 func (u *UsersController) LoginUser(c *gin.Context) {
 	var userRequest model.UserLoginUpdateRequest
 
@@ -209,6 +244,18 @@ func (u *UsersController) LogoutUser(c *gin.Context) {
 		"data": nil,
 	}))
 }
+
+// GetRefreshToken	godoc
+// @Security Bearer
+// @Summary Get Refresh Token
+// @Description Responds with Refresh Token
+// @Tags users
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      401  {object}  handler.ResponseErrors
+// @Failure      403  {object}  handler.ResponseErrors
+// @Router /refresh [get]
 func (u *UsersController) RefreshTokenUser(c *gin.Context) {
 	cookie, err := c.Cookie("refreshToken")
 	if err != nil {
@@ -252,6 +299,17 @@ func (u *UsersController) CreateUsers(c *gin.Context) {
 	}))
 }
 
+// UpdateUsers	godoc
+// @Summary Login for all role
+// @Description Update Users By ID
+// @Tags users
+// @Param request body	model.UserLoginUpdateRequest true "Update Request Body"
+// @Param id	path	string	true "Must be uuid format"
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure      400  {object}  handler.ResponseErrors
+// @Failure      404  {object}  handler.ResponseErrors
+// @Router /user/:id [put]
 func (u *UsersController) UpdateUserID(c *gin.Context) {
 	var userRequest model.UserLoginUpdateRequest
 	ctx := context.Background()

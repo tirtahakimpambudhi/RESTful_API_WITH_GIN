@@ -1,5 +1,62 @@
 basePath: /api/
 definitions:
+  handler.ResponseErrors:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.UserLoginUpdateRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 100
+        minLength: 5
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  model.UserRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+      id:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      role:
+        $ref: '#/definitions/model.UserRole'
+      username:
+        maxLength: 100
+        minLength: 5
+        type: string
+    required:
+    - email
+    - id
+    - password
+    - role
+    - username
+    type: object
+  model.UserRole:
+    enum:
+    - ADMIN
+    - MODERATOR
+    - BASIC
+    type: string
+    x-enum-varnames:
+    - Admin
+    - Moderator
+    - Basic
   web.StandartResponse:
     properties:
       data: {}
@@ -19,19 +76,14 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: https://tos.santoshk.dev
-  title: Userd & Todolist Service
+  title: Users & Todolist Service
   version: 1.0.1
 paths:
   /admin/users:
     get:
-      description: Responds with the list of all User as JSON By Search
+      description: Responds with the list of all User as JSON
       parameters:
-      - description: search users by key
-        in: query
-        name: search
-        required: true
-        type: string
-      - description: search users by key
+      - description: page
         in: query
         name: page
         required: true
@@ -42,12 +94,176 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/web.StandartResponse'
-            type: array
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
       security:
       - Bearer: []
       summary: Get Users array
+      tags:
+      - Admin
+  /admin/users/search:
+    get:
+      description: Responds with the list of all User as JSON By Search
+      parameters:
+      - description: search users by key
+        in: query
+        name: search
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+      security:
+      - Bearer: []
+      summary: Get Users array
+      tags:
+      - Admin
+  /login:
+    post:
+      description: Responds with the access token
+      parameters:
+      - description: Login Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLoginUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+      summary: Login for all role
+      tags:
+      - users
+  /refresh:
+    get:
+      description: Responds with Refresh Token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+      security:
+      - Bearer: []
+      summary: Get Refresh Token
+      tags:
+      - users
+  /register:
+    post:
+      description: Create New Users
+      parameters:
+      - description: Register Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+      summary: Register for all role
+      tags:
+      - users
+  /user/:id:
+    put:
+      description: Update Users By ID
+      parameters:
+      - description: Update Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLoginUpdateRequest'
+      - description: Must be uuid format
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.StandartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ResponseErrors'
+      summary: Login for all role
       tags:
       - users
 securityDefinitions:

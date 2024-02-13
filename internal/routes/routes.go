@@ -25,6 +25,7 @@ func (r *Routes) Run() *gin.Engine {
 	moderator := api.Group("/moderator")
 	//Admin And Moderator
 	admin.GET("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetAll)
+	admin.GET("/users/search", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetBySearch)
 	admin.POST("/registers", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.CreateUsers)
 	admin.GET("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetByID)
 	admin.DELETE("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.DeleteUserByID)

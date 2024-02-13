@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-// @title           Userd & Todolist Service
+// @title           Users & Todolist Service
 // @version         1.0.1
 // @description     Managament Todolist with Users auth
 // @termsOfService  https://tos.santoshk.dev

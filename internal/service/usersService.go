@@ -252,7 +252,13 @@ func (u *UsersService) LoginUsers(ctx context.Context, userLogin model.UserLogin
 		errService = badRequest
 		return
 	}
-	user, err := u.Repository.GetUserByEmail(ctx, tx, userLogin.Email)
+
+	user, errNotFound := u.Repository.GetUserByEmail(ctx, tx, userLogin.Email)
+	if errNotFound != nil {
+		tx.Rollback()
+		errService = exception.NewError(errNotFound, exception.ErrorNotFound)
+		return
+	}
 	if userLogin.Email != user.Email || userLogin.Username != user.Username || !bcrypts.CheckPasswordHash(userLogin.Password, user.Password) {
 		errService = exception.NewError(errors.New("Email or Username or Password Wrong"), exception.ErrorBadRequest)
 		return
@@ -268,11 +274,7 @@ func (u *UsersService) LoginUsers(ctx context.Context, userLogin model.UserLogin
 	})
 
 	errServer := tx.Model(&user).Update("refresh_token", refreshToken).Error
-	if err != nil {
-		tx.Rollback()
-		errService = exception.NewError(err, exception.ErrorNotFound)
-		return
-	} else if errServer != nil {
+	if errServer != nil {
 		tx.Rollback()
 		errServer = exception.NewError(errServer, exception.ErrorInternalServer)
 		return
