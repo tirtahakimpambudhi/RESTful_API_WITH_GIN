@@ -26,12 +26,12 @@ func (r *Routes) Run() *gin.Engine {
 	//Admin And Moderator
 	admin.GET("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetAll)
 	admin.GET("/users/search", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetBySearch)
-	admin.POST("/registers", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.CreateUsers)
 	admin.GET("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.GetByID)
-	admin.DELETE("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.DeleteUserByID)
+	admin.POST("/registers", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.CreateUsers)
 	admin.PATCH("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.RestoreUserByID)
-	admin.DELETE("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.DeleteUsersByIDs)
 	admin.PATCH("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.RestoreUsersByIDs)
+	admin.DELETE("/user/:id", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.DeleteUserByID)
+	admin.DELETE("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleAdmin, r.Controller.DeleteUsersByIDs)
 
 	moderator.GET("/users", r.Middleware.Authentication, r.Middleware.AuthorizationRoleModerator, r.Middleware.IsLogin, r.Controller.GetAll)
 	moderator.POST("/registers", r.Middleware.Authentication, r.Middleware.AuthorizationRoleModerator, r.Middleware.IsLogin, r.Controller.CreateUsers)
@@ -39,21 +39,22 @@ func (r *Routes) Run() *gin.Engine {
 	//All Role
 
 	//todolist
-	api.GET("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.GetTodoListAll)
-	api.GET("/user/:id/todolist/s", r.Middleware.IsLogin, r.TodoList.GetTodoListSearch)
+	api.GET("/user/:id/todolists", r.Middleware.IsLogin, r.TodoList.GetTodoListAll)
+	api.GET("/user/:id/todolists/s", r.Middleware.IsLogin, r.TodoList.GetTodoListSearch)
+	api.GET("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.GetTodoListByID)
 	api.POST("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.CreateTodoList)
-	api.PUT("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.UpdateTodoList)
 	api.POST("/user/:id/todolists", r.Middleware.IsLogin, r.TodoList.CreatesTodoLists)
+	api.PUT("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.UpdateTodoList)
 	api.DELETE("/user/:id/todolist", r.Middleware.IsLogin, r.TodoList.DeleteTodoList)
 	api.DELETE("/user/:id/todolists", r.Middleware.IsLogin, r.TodoList.DeleteTodoLists)
 
 	//users
-	api.GET("/authentication/", r.Middleware.Authentication, r.Middleware.AuthorizationAllRole)
-	api.PUT("/user/:id", r.Middleware.IsLogin, r.Controller.UpdateUserID)
+	api.GET("/auth", r.Middleware.Authentication, r.Middleware.AuthorizationAllRole)
+	api.GET("/refresh", r.Controller.RefreshTokenUser)
 	api.POST("/register", r.Controller.CreateUser)
 	api.POST("/login", r.Controller.LoginUser)
+	api.PUT("/user/:id", r.Middleware.IsLogin, r.Controller.UpdateUserID)
 	api.DELETE("/logout", r.Controller.LogoutUser)
-	api.GET("/refresh", r.Controller.RefreshTokenUser)
 
 	return router
 }

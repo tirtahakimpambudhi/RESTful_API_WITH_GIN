@@ -20,7 +20,9 @@ type Middleware struct {
 }
 
 func (m *Middleware) IsLogin(c *gin.Context) {
-	_, err := c.Cookie("refreshToken")
+
+	refreshToken, err := c.Cookie("refreshToken")
+	tx := m.DB.Begin()
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "UNAUTHORIZED",
@@ -28,9 +30,27 @@ func (m *Middleware) IsLogin(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
+	errNotFound := tx.Where("refresh_token = ?", refreshToken).Error
+	if errNotFound != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "NOT FOUND",
+		})
+		c.Abort()
+		return
+	}
 	c.Next()
 }
+
+// Authentication godoc
+// @Security	Bearer
+// @Summary To Authentication
+// @Description To Check Your Access Token
+// @Tags Middleware
+// @Produce json
+// @Success 200 {object} web.StandartResponse
+// @Failure 401 {object} handler.ResponseErrors "Unauthorized"
+// @Failure 403 {object} handler.ResponseErrors "Forbidden"
+// @Router /auth [get]
 func (m *Middleware) AuthorizationAllRole(c *gin.Context) {
 	idInterface, exist := c.Get("user_id")
 	tx := m.DB.Begin()
@@ -65,6 +85,7 @@ func (m *Middleware) AuthorizationAllRole(c *gin.Context) {
 
 	c.JSON(http.StatusOK, web.NewStandartResponse(http.StatusOK, "successfuly authentication", user.ToUserResponse()))
 }
+
 func (m *Middleware) Authentication(c *gin.Context) {
 	accessToken, err := helper.ExtractBearerToken(c.GetHeader("Authorization"))
 

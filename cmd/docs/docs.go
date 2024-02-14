@@ -24,6 +24,209 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/registers": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create new many users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Register for all roles",
+                "parameters": [
+                    {
+                        "description": "Registers Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserRequest"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve user details by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get User By ID for ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must be in UUID format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete user by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete or Banned User for ADMIN role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must be in UUID format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Restore a user by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Restore User for ADMIN role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must be in UUID format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "security": [
@@ -31,7 +234,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "Responds with the list of all User as JSON",
+                "description": "Retrieve a list of all users as JSON",
                 "produces": [
                     "application/json"
                 ],
@@ -42,7 +245,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "page",
+                        "description": "Page number",
                         "name": "page",
                         "in": "query",
                         "required": true
@@ -56,7 +259,174 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete users by IDs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete or Banned User for ADMIN role",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Must be in UUID format",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Restore users by IDs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Restore Users for ADMIN role",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Must be in UUID format",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/search": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve a list of users as JSON based on search criteria",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get Users array",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search users by key",
+                        "name": "search",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
@@ -76,48 +446,26 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/users/search": {
+        "/auth": {
             "get": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Responds with the list of all User as JSON By Search",
+                "description": "To Check Your Access Token",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Middleware"
                 ],
-                "summary": "Get Users array",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "search users by key",
-                        "name": "search",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "To Authentication",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/web.StandartResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/handler.ResponseErrors"
                         }
                     },
                     "401": {
@@ -142,9 +490,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "All"
                 ],
-                "summary": "Login for all role",
+                "summary": "Login for all roles",
                 "parameters": [
                     {
                         "description": "Login Request Body",
@@ -164,13 +512,45 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request format",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "delete": {
+                "description": "Logout users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "All"
+                ],
+                "summary": "Logout User for all roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request format",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
@@ -180,17 +560,12 @@ const docTemplate = `{
         },
         "/refresh": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Responds with Refresh Token",
+                "description": "Responds with a Refresh Token",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "All"
                 ],
                 "summary": "Get Refresh Token",
                 "responses": {
@@ -201,7 +576,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request format",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
@@ -223,14 +598,14 @@ const docTemplate = `{
         },
         "/register": {
             "post": {
-                "description": "Create New Users",
+                "description": "Create new users",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "All"
                 ],
-                "summary": "Register for all role",
+                "summary": "Register for all roles",
                 "parameters": [
                     {
                         "description": "Register Request Body",
@@ -250,7 +625,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request format",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
@@ -264,16 +639,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/:id": {
+        "/user/{id}": {
             "put": {
-                "description": "Update Users By ID",
+                "description": "Update user by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "All"
                 ],
-                "summary": "Login for all role",
+                "summary": "Update User for all roles",
                 "parameters": [
                     {
                         "description": "Update Request Body",
@@ -286,7 +661,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Must be uuid format",
+                        "description": "Must be in UUID format",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -300,13 +675,414 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Bad request format",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/todolist": {
+            "get": {
+                "description": "Retrieve a object Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Get Todolist By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID todolist",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Update Todolist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID Todolist",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Object Todolist for Update Todolist",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TodoListRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create New Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Create New Todolist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Object Todolist for Create Todolist",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TodoListRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Retrieve a object Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Delete Todolist By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID todolist",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/todolists": {
+            "get": {
+                "description": "Retrieve a list all Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Get all Todolist array",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create New Todolists as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Create New Todolists",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Array Todolist for Create Many",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.TodoListRequest"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Retrieve a object Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Delete Todolist By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must Be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "ID todolist",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}/todolists/s": {
+            "get": {
+                "description": "Retrieve a list of all Todolist as JSON",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Todolist"
+                ],
+                "summary": "Get Todolist array by search key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Must be UUID Format",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "search keywords for task name, description",
+                        "name": "search",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/web.StandartResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ResponseErrors"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/handler.ResponseErrors"
                         }
@@ -324,6 +1100,57 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.Date": {
+            "type": "object",
+            "required": [
+                "day",
+                "month",
+                "year"
+            ],
+            "properties": {
+                "day": {
+                    "type": "integer",
+                    "maximum": 31,
+                    "minimum": 1
+                },
+                "month": {
+                    "type": "integer",
+                    "maximum": 12,
+                    "minimum": 1
+                },
+                "year": {
+                    "type": "integer",
+                    "maximum": 2100,
+                    "minimum": 1900
+                }
+            }
+        },
+        "model.TodoListRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "due_date",
+                "task_name"
+            ],
+            "properties": {
+                "completed": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "$ref": "#/definitions/model.Date"
+                },
+                "priority": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "task_name": {
+                    "type": "string"
                 }
             }
         },

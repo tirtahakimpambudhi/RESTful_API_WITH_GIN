@@ -68,7 +68,12 @@ See Result
 
 ## API Documentation
 
-At Another Time Im So Lazy 
+#### Swagger UI
+```bash
+go run ./cmd/app/main.go
+```
+#### Go to Browser
+http://localhost:3500/docs
 
 ## Contributing
 
