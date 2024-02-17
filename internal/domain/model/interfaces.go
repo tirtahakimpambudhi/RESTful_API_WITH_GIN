@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
+type CustomSeeds interface {
+	Run(ctx context.Context, DB *gorm.DB, fill int) error
+}
+
 type UsersRepository interface {
 	GetUsers(ctx context.Context, DB *gorm.DB, query web.GetAllValue) Users
 	GetUsersBySearch(ctx context.Context, DB *gorm.DB, query web.SearchValue) Users
