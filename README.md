@@ -73,7 +73,7 @@ See Result
 go run ./cmd/app/main.go
 ```
 #### Go to Browser
-http://localhost:3500/docs
+[http://localhost:3500/docs](http://localhost:3500/docs/index.html)
 
 ## Contributing
 
