@@ -32,7 +32,7 @@ Users And TodoList
 ### Prerequisites
 
 - Install External Package
-    - GORM & MySQL Driver
+    - GORM & PostgreSQL Driver
     - Validator
     - Gin Web Framework
     - Viper
